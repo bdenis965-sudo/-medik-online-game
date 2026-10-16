@@ -14,6 +14,7 @@ header{background:#3b3027;color:#fff0ce;padding:13px 15px;position:sticky;top:0;
 nav{display:flex;gap:6px;overflow-x:auto;padding:9px;background:#e8c993;position:sticky;top:93px;z-index:3}
 nav button{flex:0 0 auto;border:1px solid #c7a46a;background:#fff0ce;color:#664321;border-radius:8px;padding:9px 11px;font-weight:700}
 nav button.active{background:#6c3d8e;color:#fff;border-color:#6c3d8e}
+.feature-card{display:flex;flex-direction:column;gap:7px}.feature-card .feature-action{margin-top:auto}.feature-card.locked{opacity:.78}.feature-card p{margin:0}.wide-input{width:100%;min-width:0;padding:11px;border:1px solid #c7a46a;border-radius:8px;background:#fffaf0;color:#664321}.feature-status{font-size:11px;color:#8a775f}
 main{max-width:850px;margin:auto;padding:12px}.panel{background:var(--paper);border:1px solid #e7ce9c;border-radius:12px;padding:14px;margin-bottom:12px;box-shadow:0 2px 5px #69451a0a}
 h2{font-size:18px;margin:0 0 12px}h3{font-size:15px;margin:0 0 9px}.muted{color:#8a775f}.profile-head{display:grid;grid-template-columns:100px 1fr;gap:13px;align-items:center}
 .avatar{height:104px;border-radius:12px;background:linear-gradient(145deg,#c9e7e9,#78a5a8);display:grid;place-items:center;font-size:57px;border:2px solid #b8c3b7}
@@ -32,13 +33,13 @@ footer{text-align:center;padding:10px 14px 24px;font-size:11px;color:#927957}
 <header>
  <div class="brand">🏥 Медик Онлайн <small>Твоя больница — твои правила</small></div>
  <div class="stats">
-  <span class="pill">🪙 <b id="gold">1200</b></span><span class="pill">⭐ <b id="prestige">150</b> престижа</span>
-  <span class="pill">📈 Уровень <b id="level">3</b></span><span class="pill">🩺 Пациенты <b id="patientsCount">2</b></span>
+  <span class="pill">🪙 <b id="gold">1200</b></span><span class="pill">💎 <b id="diamonds">4</b> алмаза</span><span class="pill">⭐ <b id="prestige">150</b> престижа</span>
+  <span class="pill">📈 Уровень <b id="level">3</b></span><span class="pill">🩺 Пациенты <b id="patientsCount">2</b></span><span class="pill" id="doubleXpPill">⚡ День опыта ×2</span>
  </div>
 </header>
 <nav id="nav">
  <button class="active" data-tab="profile">👤 Профиль</button><button data-tab="hospital">🏥 Больница</button>
- <button data-tab="shop">🛒 Магазин</button><button data-tab="staff">👨‍⚕️ Персонал</button><button data-tab="tasks">📋 Задания</button><button data-tab="emergency">🚑 Реанимация</button><button data-tab="departments">🏢 Отделения</button><button data-tab="mail">✉️ Почта</button>
+ <button data-tab="shop">🛒 Магазин</button><button data-tab="staff">👨‍⚕️ Персонал</button><button data-tab="tasks">📋 Задания</button><button data-tab="emergency">🚑 Реанимация</button><button data-tab="departments">🏢 Отделения</button><button data-tab="features">🌐 Все разделы</button><button data-tab="mail">✉️ Почта</button>
 </nav>
 <main>
 <section id="profile" class="tab">
@@ -72,6 +73,10 @@ footer{text-align:center;padding:10px 14px 24px;font-size:11px;color:#927957}
  <div class="panel"><h2>🏢 Отделения больницы</h2><p class="muted">Открывай отделения, увеличивай число коек и получай новые возможности.</p><div class="grid2" id="departmentItems"></div></div>
  <div class="panel"><h2>🛏️ Вместимость больницы</h2><div id="bedStats"></div></div>
 </section>
+<section id="features" class="tab hidden">
+ <div class="panel"><h2>🌐 Все разделы больницы</h2><div class="notice">Чат, форум и друзья в этой версии работают локально на этом устройстве. Для настоящей онлайн-игры нужен сервер.</div><div class="grid2" id="featureItems"></div></div>
+ <div class="panel"><h2 id="featureDetailTitle">📌 Выбери раздел</h2><div id="featureDetail" class="muted">Нажми «Открыть» на карточке выше.</div></div>
+</section>
 <section id="mail" class="tab hidden">
  <div class="panel"><h2>✉️ Почта больницы</h2><div class="action-row"><input id="messageInput" maxlength="180" placeholder="Напиши заметку для себя" style="flex:1;min-width:180px;padding:10px;border:1px solid #c7a46a;border-radius:8px"><button class="primary" onclick="sendMessage()">Сохранить</button></div><div id="messages" style="margin-top:12px"></div></div>
 </section>
@@ -79,7 +84,7 @@ footer{text-align:center;padding:10px 14px 24px;font-size:11px;color:#927957}
 <footer>Медик Онлайн — оригинальная браузерная игра-фанатский прототип. Прогресс хранится на устройстве.</footer>
 <script>
 const initial={
- gold:1200,prestige:150,level:3,xp:45,cured:12,earned:2450,
+ gold:1200,diamonds:4,prestige:150,level:3,xp:45,cured:12,earned:2450,
  inventory:[
  {id:'blender',icon:'🥣',name:'Блендер',count:12,desc:'Помогает готовить смеси для процедур.'},
  {id:'stove',icon:'🍔',name:'Кухонная плита',count:12,desc:'Оборудование для кухни больницы.'},
@@ -120,18 +125,20 @@ const initial={
  {id:'robot',name:'Медицинский робот',icon:'🤖',cost:1400,level:0,max:5,desc:'Автоматизирует рутинные действия',bonus:'Автоматический осмотр'},
  {id:'infusion',name:'Инфузомат',icon:'💉',cost:950,level:0,max:5,desc:'Упрощает процедуры',bonus:'Лечение быстрее'}
  ],
- departments:[{id:'therapy',name:'Терапия',icon:'🩺',cost:0,owned:true,desc:'Основное лечение пациентов.'},{id:'labdept',name:'Диагностическая лаборатория',icon:'🧪',cost:1800,owned:false,desc:'Больше опыта за диагностику.'},{id:'surgery',name:'Хирургия',icon:'🩻',cost:3200,owned:false,desc:'Дополнительная награда за сложные случаи.'},{id:'icu',name:'Реанимация',icon:'❤️‍🩹',cost:4500,owned:false,desc:'Приём экстренных пациентов.'},{id:'pediatrics',name:'Педиатрия',icon:'🧸',cost:2600,owned:false,desc:'Приём маленьких пациентов.'}],beds:8,messages:[],lastBonusDay:'',tasksClaimed:false,bonusClaimed:false,log:['Добро пожаловать в Медик Онлайн!','Ты получил стартовый капитал: 1200 монет.']
+ departments:[{id:'therapy',name:'Терапия',icon:'🩺',cost:0,owned:true,desc:'Основное лечение пациентов.'},{id:'labdept',name:'Диагностическая лаборатория',icon:'🧪',cost:1800,owned:false,desc:'Больше опыта за диагностику.'},{id:'surgery',name:'Хирургия',icon:'🩻',cost:3200,owned:false,desc:'Дополнительная награда за сложные случаи.'},{id:'icu',name:'Реанимация',icon:'❤️‍🩹',cost:4500,owned:false,desc:'Приём экстренных пациентов.'},{id:'pediatrics',name:'Педиатрия',icon:'🧸',cost:2600,owned:false,desc:'Приём маленьких пациентов.'}],beds:8,messages:[],lastBonusDay:'',lastQuestDay:'',lastDoubleXpDay:'',featureClaims:{},featurePosts:[],friends:[],alliance:'',tasksClaimed:false,bonusClaimed:false,log:['Добро пожаловать в Медик Онлайн!','Ты получил стартовый капитал: 1200 монет.']
 };
 let game;
 try{game=JSON.parse(localStorage.getItem('medikOnlineSave'))||JSON.parse(JSON.stringify(initial))}catch(e){game=JSON.parse(JSON.stringify(initial))}
 // Совместимость со старыми сохранениями: новые функции добавляются без потери прогресса.
-for(const k of ['departments','messages']) if(!Array.isArray(game[k])) game[k]=JSON.parse(JSON.stringify(initial[k])); if(!Number.isFinite(game.beds)) game.beds=8; if(!game.lastBonusDay) game.lastBonusDay='';
+for(const k of ['departments','messages','featurePosts','friends']) if(!Array.isArray(game[k])) game[k]=JSON.parse(JSON.stringify(initial[k])); if(!game.featureClaims||typeof game.featureClaims!=='object') game.featureClaims={}; if(!Number.isFinite(game.featureClaims.operatingLevel)) game.featureClaims.operatingLevel=3; if(!Number.isFinite(game.featureClaims.cafeLevel)) game.featureClaims.cafeLevel=7; if(!Number.isFinite(game.featureClaims.vehicleCount)) game.featureClaims.vehicleCount=1; if(!Number.isFinite(game.diamonds)) game.diamonds=4; if(typeof game.alliance!=='string') game.alliance=''; if(!game.lastQuestDay) game.lastQuestDay=''; if(!game.lastDoubleXpDay) game.lastDoubleXpDay=''; if(!Number.isFinite(game.beds)) game.beds=8; if(!game.lastBonusDay) game.lastBonusDay='';
 function save(){localStorage.setItem('medikOnlineSave',JSON.stringify(game));render()}
 function money(n){return Math.round(n).toLocaleString('ru-RU')}
+function dayKey(){const d=new Date();return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0')}
+function hasClaim(id){return game.featureClaims[id]===dayKey()}
 function addLog(t){game.log.unshift(new Date().toLocaleTimeString('ru-RU',{hour:'2-digit',minute:'2-digit'})+' — '+t);game.log=game.log.slice(0,35)}
 function showTab(id){document.querySelectorAll('.tab').forEach(s=>s.classList.toggle('hidden',s.id!==id));document.querySelectorAll('nav button').forEach(b=>b.classList.toggle('active',b.dataset.tab===id));window.scrollTo({top:0,behavior:'smooth'})}
 document.querySelectorAll('nav button').forEach(b=>b.onclick=()=>showTab(b.dataset.tab));
-function addXP(n){game.xp+=n;while(game.xp>=100){game.xp-=100;game.level++;game.gold+=250;game.prestige+=20;addLog('Новый уровень '+game.level+'! Бонус: 250 монет и 20 престижа.')} }
+function addXP(n){const multiplier=game.lastDoubleXpDay===dayKey()?2:1;game.xp+=n*multiplier;while(game.xp>=100){game.xp-=100;game.level++;game.gold+=250;game.prestige+=20;addLog('Новый уровень '+game.level+'! Бонус: 250 монет и 20 престижа.')} }
 function getEquip(id){return game.equipment.find(x=>x.id===id)}
 function getInv(id){return game.inventory.find(x=>x.id===id)}
 function admitPatient(){if(game.patients.length>=game.beds){alert('Все койки заняты! Вылечи кого-нибудь или улучши больницу.');return}let names=['Иван','Алина','Дмитрий','София','Максим','Ева','Никита','Полина','Артём','Виктория'];let conditions=['Температура и слабость','Боль в горле','Кашель','Ушиб руки','Боль в животе','Головокружение'];let p={id:Date.now(),name:names[Math.floor(Math.random()*names.length)],icon:['🧑','👩','👨','👧'][Math.floor(Math.random()*4)],condition:conditions[Math.floor(Math.random()*conditions.length)],severity:1+Math.floor(Math.random()*3),diagnosed:false,meds:false};game.patients.push(p);addLog('Принят новый пациент: '+p.name+'.');save()}
@@ -143,7 +150,8 @@ function giveMedicineAll(){if(!getEquip('infusion').level){alert('Для авт�
 function buyEquip(id){let e=getEquip(id);let cost=e.cost*(e.level+1);if(e.level>=e.max){alert('Максимальный уровень уже достигнут.');return}if(game.gold<cost){alert('Не хватает монет!');return}game.gold-=cost;e.level++;game.prestige+=5;addLog(e.name+' улучшен до уровня '+e.level+'.');save()}
 function buyStaff(id){let s=game.staff.find(x=>x.id===id);if(game.gold<s.cost){alert('Не хватает монет!');return}game.gold-=s.cost;s.owned++;s.cost=Math.round(s.cost*1.45);addLog('Нанят сотрудник: '+s.name+'.');save()}
 function claimTasks(){if(game.tasksClaimed){alert('Награда за задания уже получена.');return}if(game.cured<3){alert('Для награды нужно вылечить ещё '+(3-game.cured)+' пациента(ов).');return}game.tasksClaimed=true;game.gold+=500;game.prestige+=25;addXP(25);addLog('Выполнены ежедневные задания: +500 монет, +25 престижа.');save()}
-function dailyBonus(){let day=new Date().toLocaleDateString('en-CA');if(game.lastBonusDay===day){alert('Ежедневный бонус уже получен сегодня.');return}game.lastBonusDay=day;game.bonusClaimed=true;game.gold+=250;addXP(10);addLog('Получен ежедневный бонус: 250 монет и 10 опыта.');save()}
+function dailyBonus(){let day=dayKey();if(game.lastBonusDay===day){alert('Ежедневный бонус уже получен сегодня.');return}game.lastBonusDay=day;game.bonusClaimed=true;game.gold+=250;addXP(10);addLog('Получен ежедневный бонус: 250 монет и опыт.');save()}
+function claimDailyQuests(){if(game.lastQuestDay===dayKey()){alert('Ежедневные задания уже забраны сегодня.');return}if(game.cured<3){alert('Для награды нужно вылечить хотя бы 3 пациентов всего.');return}game.lastQuestDay=dayKey();game.gold+=700;game.diamonds+=1;addXP(30);addLog('Ежедневные задания выполнены: +700 золота, +1 алмаз.');save()}
 function messagePlayer(){showTab('mail');document.getElementById('messageInput').focus()}
 function sendMessage(){let el=document.getElementById('messageInput'),text=el.value.trim();if(!text){alert('Сначала напиши заметку.');return}game.messages.unshift({text,at:new Date().toLocaleString('ru-RU')});game.messages=game.messages.slice(0,30);el.value='';addLog('Добавлена заметка в почту больницы.');save()}
 function emergencyCall(){if(!game.departments.find(d=>d.id==='icu').owned){alert('Сначала открой отделение реанимации.');showTab('departments');return}if(game.patients.length>=game.beds){alert('Нет свободных коек! Выпиши пациентов или улучши вместимость.');return}const p={id:Date.now(),name:['Сергей','Ольга','Павел','Кристина','Михаил'][Math.floor(Math.random()*5)],icon:'🚑',condition:['Экстренный случай: требуется стабилизация','Тяжёлая травма: требуется наблюдение','Острое ухудшение состояния'][Math.floor(Math.random()*3)],severity:3,diagnosed:false,meds:false,emergency:true,stable:false};game.patients.push(p);addLog('Скорая доставила тяжёлого пациента '+p.name+'.');save();showTab('emergency')}
@@ -154,7 +162,7 @@ function upgradeBeds(){let cost=game.beds*300;if(game.gold<cost){alert('Не х�
 function resetGame(){if(confirm('Точно сбросить весь прогресс на этом устройстве?')){localStorage.removeItem('medikOnlineSave');game=JSON.parse(JSON.stringify(initial));save()}}
 function exportSave(){let blob=new Blob([JSON.stringify(game,null,2)],{type:'application/json'});let a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='medik-online-save.json';a.click();URL.revokeObjectURL(a.href)}
 function render(){
- document.getElementById('gold').textContent=money(game.gold);document.getElementById('prestige').textContent=money(game.prestige);document.getElementById('prestige2').textContent=money(game.prestige);document.getElementById('level').textContent=game.level;document.getElementById('level2').textContent=game.level;document.getElementById('xp').textContent=game.xp;document.getElementById('xpbar').style.width=game.xp+'%';document.getElementById('patientsCount').textContent=game.patients.length;document.getElementById('cured').textContent=game.cured;document.getElementById('earned').textContent=money(game.earned);document.getElementById('itemTotal').textContent='('+game.inventory.reduce((a,x)=>a+x.count,0)+')';
+ document.getElementById('gold').textContent=money(game.gold);document.getElementById('diamonds').textContent=game.diamonds;document.getElementById('doubleXpPill').textContent=game.lastDoubleXpDay===dayKey()?'⚡ Опыт ×2 активен':'⚡ День опыта ×2';document.getElementById('prestige').textContent=money(game.prestige);document.getElementById('prestige2').textContent=money(game.prestige);document.getElementById('level').textContent=game.level;document.getElementById('level2').textContent=game.level;document.getElementById('xp').textContent=game.xp;document.getElementById('xpbar').style.width=game.xp+'%';document.getElementById('patientsCount').textContent=game.patients.length;document.getElementById('cured').textContent=game.cured;document.getElementById('earned').textContent=money(game.earned);document.getElementById('itemTotal').textContent='('+game.inventory.reduce((a,x)=>a+x.count,0)+')';
  document.getElementById('inventory').innerHTML=game.inventory.map(x=>`<div class="item"><div class="item-icon">${x.icon}</div><div><div class="item-name" onclick="alert('${x.desc}')">${x.name}</div><div class="item-meta">${x.desc}</div></div><div class="item-count">×${x.count}</div></div>`).join('');
  document.getElementById('log').innerHTML=game.log.map(x=>'<div>'+escapeHTML(x)+'</div>').join('');
  document.getElementById('patients').innerHTML=game.patients.length?game.patients.map(p=>`<div class="patient"><div class="patient-icon">${p.icon}</div><div><b>${escapeHTML(p.name)}</b> <span class="tag">Сложность ${p.severity}/3</span><p>Жалобы: ${escapeHTML(p.condition)}</p><p>Осмотр: ${p.diagnosed?'✅ проведён':'⏳ не проведён'} · Лекарства: ${p.meds?'✅ выданы':'⏳ не выданы'}</p><div class="action-row">${!p.diagnosed?`<button class="secondary smallbtn" onclick="diagnose(${p.id})">🩺 Осмотреть</button>`:''}${p.diagnosed&&!p.meds?`<button class="secondary smallbtn" onclick="giveMedicine(${p.id})">💊 Выдать лекарства</button>`:''}${p.diagnosed&&p.meds?`<button class="primary smallbtn" onclick="cure(${p.id})">💚 Выписать</button>`:''}</div></div></div>`).join(''):'<div class="notice">Пока пациентов нет. Нажми «Принять пациента», чтобы начать работу.</div>';
@@ -163,8 +171,78 @@ function render(){
  document.getElementById('staffItems').innerHTML=game.staff.map(s=>`<div class="card"><div class="emoji">${s.icon}</div><h3>${s.name}</h3><p>${s.desc}</p><span class="tag">В штате: ${s.owned}</span><p class="price">${money(s.cost)} 🪙</p><button class="primary smallbtn" onclick="buyStaff('${s.id}')">Нанять</button></div>`).join('');
  document.getElementById('emergencyPatients').innerHTML=game.patients.filter(p=>p.emergency).map(p=>`<div class="patient"><div class="patient-icon">${p.icon}</div><div><b>${escapeHTML(p.name)}</b><p>${escapeHTML(p.condition)}</p><span class="tag">${p.stable?'✅ Стабилизирован':'🚨 Требуется помощь'}</span><div class="action-row">${!p.stable?`<button class="danger smallbtn" onclick="stabilize(${p.id})">❤️‍🩹 Стабилизировать</button>`:`<button class="primary smallbtn" onclick="giveMedicine(${p.id})">💊 Продолжить лечение</button>`}</div></div></div>`).join('')||'<div class="notice">Экстренных пациентов пока нет. Открой реанимацию и вызови скорую.</div>';
  document.getElementById('departmentItems').innerHTML=game.departments.map(d=>`<div class="card"><div class="emoji">${d.icon}</div><h3>${d.name}</h3><p>${d.desc}</p><span class="tag">${d.owned?'✅ Открыто':'🔒 Закрыто'}</span><p class="price">${d.owned?'Доступно':money(d.cost)+' 🪙'}</p>${d.owned?'':`<button class="primary smallbtn" onclick="buyDepartment('${d.id}')">Открыть</button>`}</div>`).join('');document.getElementById('bedStats').innerHTML=`<p>Свободно коек: ${Math.max(0,game.beds-game.patients.length)} из ${game.beds}</p><button class="primary" onclick="upgradeBeds()">➕ Добавить 2 койки — ${money(game.beds*300)} 🪙</button>`;document.getElementById('messages').innerHTML=game.messages.length?game.messages.map(m=>`<div class="item"><div class="item-icon">✉️</div><div><b>${escapeHTML(m.at)}</b><div class="item-meta">${escapeHTML(m.text)}</div></div></div>`).join(''):'<div class="notice">Пока нет заметок.</div>';
+ document.getElementById('featureItems').innerHTML=featureList.map(f=>{const locked=game.level<(f.level||1);const status=locked?'🔒 С '+f.level+' уровня':(f.id==='vet'&&game.level>=38||f.id==='infection'&&game.level>=35?'✅ Доступно':f.id==='doublexp'&&game.lastDoubleXpDay===dayKey()?'⚡ Активно':'Открыто');return `<div class="card feature-card ${locked?'locked':''}"><div class="emoji">${f.icon}</div><h3>${f.name}</h3><p>${f.desc}</p><span class="tag">${status}</span><button class="primary smallbtn feature-action" onclick="${f.id==='doublexp'?'activateDoubleXp()':`openFeature('${f.id}')`}" ${locked?'disabled':''}>${locked?'Недоступно':'Открыть'}</button></div>`}).join('');
  document.getElementById('taskList').innerHTML=`<div class="item"><div class="item-icon">💚</div><div><b>Вылечить 3 пациентов</b><div class="item-meta">Прогресс: ${Math.min(game.cured,3)}/3 · Награда: 500 монет и 25 престижа</div></div><div>${game.tasksClaimed?'✅':'📋'}</div></div><div class="item"><div class="item-icon">🩺</div><div><b>Провести осмотр</b><div class="item-meta">Осмотри пациентов в приёмном отделении</div></div><div>∞</div></div>`;
 }
+const featureList=[
+{id:'doublexp',name:'День двойного опыта ×2',icon:'⚡',desc:'Включи удвоение опыта на сегодня.'},
+{id:'wards',name:'Палаты (8)',icon:'🛏️',desc:'Управление койками и вместимостью.'},
+{id:'labs',name:'Лаборатории (7)',icon:'🧪',desc:'Анализы, диагностика и лаборанты.'},
+{id:'vehicles',name:'Автопарк',icon:'🚑',desc:'Покупай машины для экстренной помощи.'},
+{id:'cafeteria',name:'Кафетерий (7)',icon:'🍽️',desc:'Развивай кафетерий до 7 уровня.'},
+{id:'vet',name:'Ветеринария',icon:'🐾',level:38,desc:'Открывается на 38 уровне.'},
+{id:'infection',name:'Инфекционное отделение',icon:'🦠',level:35,desc:'Открывается на 35 уровне.'},
+{id:'emergency',name:'Чрезвычайные ситуации',icon:'🚨',desc:'Скорая, тяжёлые случаи и стабилизация.'},
+{id:'diamondquests',name:'Алмазные задания',icon:'💎',desc:'Ежедневное задание с алмазной наградой.'},
+{id:'daily',name:'Ежедневные задания',icon:'📋',desc:'Забирай ежедневные награды.'},
+{id:'warehouse',name:'Склад',icon:'📦',desc:'Все предметы и оборудование.'},
+{id:'shop',name:'Магазин',icon:'🛒',desc:'Покупай и улучшай оборудование.'},
+{id:'office',name:'Кабинет',icon:'🗂️',desc:'Кабинет главного врача.'},
+{id:'mystery',name:'Таинственное поле',icon:'🌿',desc:'Исследуй поле и находи награды.'},
+{id:'operating',name:'Операционная (3/4)',icon:'🩺',desc:'Улучшай операционную до 4 уровня.'},
+{id:'halloween',name:'Хэллоуин',icon:'🎃',desc:'Сезонное событие и награды.'},
+{id:'epidemic',name:'Эпидемия',icon:'🦠',desc:'Событие с лечением пациентов.'},
+{id:'labstar',name:'Лучший лаборант',icon:'🏆',desc:'Испытание для лаборатории.'},
+{id:'diamondshop',name:'Покупка алмазов',icon:'💎',desc:'Обмен игровых алмазов на золото.'},
+{id:'forum',name:'Форум',icon:'💬',desc:'Локальная доска обсуждений.'},
+{id:'chat',name:'Чат',icon:'🗨️',desc:'Локальные сообщения в демо-режиме.'},
+{id:'help',name:'Помощь',icon:'❔',desc:'Подсказки по игре.'},
+{id:'mail',name:'Почтовый ящик',icon:'✉️',desc:'Личные заметки.'},
+{id:'friends',name:'Друзья',icon:'👥',desc:'Веди локальный список друзей.'},
+{id:'profile',name:'Профиль',icon:'👤',desc:'Твои ресурсы и статистика.'},
+{id:'alliance',name:'Союз',icon:'🤝',desc:'Создай союз игроков.'},
+{id:'allianceforum',name:'Форум союза',icon:'🛡️',desc:'Обсуждения внутри союза.'},
+{id:'residents',name:'Ординаторская',icon:'🩺',desc:'Бонус для команды врачей.'}
+];
+function featureById(id){return featureList.find(f=>f.id===id)||{name:'Раздел',icon:'📌',desc:''}}
+function activateDoubleXp(){game.lastDoubleXpDay=dayKey();addLog('Активирован день двойного опыта ×2.');save();renderFeatureDetail('doublexp')}
+function openFeature(id){const f=featureById(id);if(game.level<(f.level||1)){alert('Этот раздел откроется на '+f.level+' уровне.');return}if(id==='shop'){showTab('shop');return}if(id==='mail'){showTab('mail');return}if(id==='emergency'){showTab('emergency');return}if(id==='profile'){showTab('profile');return}showTab('features');renderFeatureDetail(id)}
+function claimFeature(id,gold=200,xp=15){if(game.featureClaims[id]===dayKey()){alert('Награда за этот раздел уже получена сегодня.');return}game.featureClaims[id]=dayKey();game.gold+=gold;addXP(xp);addLog('Награда раздела «'+featureById(id).name+'»: +'+money(gold)+' золота.');save();renderFeatureDetail(id)}
+function renderFeatureDetail(id){const f=featureById(id),box=document.getElementById('featureDetail'),title=document.getElementById('featureDetailTitle');title.textContent=f.icon+' '+f.name;let h='';
+if(id==='doublexp')h='<p>Все получаемые очки опыта удваиваются до конца сегодняшнего дня.</p><span class="tag">'+(game.lastDoubleXpDay===dayKey()?'⚡ Уже активно':'Можно активировать')+'</span>';
+else if(id==='wards')h='<p>Вместимость: '+game.beds+' коек. Занято: '+game.patients.length+'.</p><button class="primary" onclick="showTab(\'departments\')">Управлять койками</button>';
+else if(id==='labs')h='<p>Уровень лаборатории: '+getEquip('lab2').level+'. Лаборантов: '+game.staff.find(x=>x.id==='labtech').owned+'.</p><button class="primary" onclick="showTab(\'shop\')">Улучшить лабораторию</button>';
+else if(id==='vehicles')h='<p>Машин в автопарке: '+(game.featureClaims.vehicleCount||1)+'.</p><button class="primary" onclick="buyVehicle()">Купить машину — '+money(1500*(game.featureClaims.vehicleCount||1))+' 🪙</button> <button class="secondary" onclick="showTab(\'emergency\')">Вызвать скорую</button>';
+else if(id==='cafeteria')h='<p>Уровень кафетерия: '+(game.featureClaims.cafeLevel||1)+'/7.</p><button class="primary" onclick="upgradeCafe()">Улучшить — '+money(400*(game.featureClaims.cafeLevel||1))+' 🪙</button>';
+else if(id==='vet'||id==='infection')h='<p>'+f.desc+' Текущий уровень: '+game.level+'.</p>'+(game.level>=(f.level||1)?'<button class="primary" onclick="claimFeature(\''+id+'\',500,30)">Пройти тренировку</button>':'<span class="tag">🔒 Пока закрыто</span>');
+else if(id==='operating')h='<p>Уровень операционной: '+(game.featureClaims.operatingLevel||1)+'/4.</p><button class="primary" onclick="upgradeOperating()">Улучшить — '+money(500*(game.featureClaims.operatingLevel||1))+' 🪙</button>';
+else if(id==='diamondshop')h='<p>Баланс: '+game.diamonds+' 💎. 1 алмаз можно обменять на 10 000 золота.</p><button class="primary" onclick="buyGoldWithDiamond()">Обменять 1 💎 на 10 000 🪙</button> <button class="secondary" onclick="buyDiamondWithGold()">Купить 1 💎 за 50 000 🪙</button>';
+else if(id==='diamondquests')h='<p>Ежедневная награда: +1 алмаз и +250 золота.</p><button class="primary" onclick="claimDiamondQuest()">'+(game.featureClaims[id]===dayKey()?'Задание выполнено':'Забрать алмазную награду')+'</button>';
+else if(id==='daily')h='<p>Ежедневная награда: +700 золота, +1 алмаз и опыт. Нужно вылечить минимум 3 пациентов.</p><button class="primary" onclick="claimDailyQuests()">Забрать награду</button> <button class="secondary" onclick="dailyBonus()">Ежедневный бонус</button>';
+else if(id==='warehouse')h='<p>Предметов на складе: '+game.inventory.reduce((a,x)=>a+x.count,0)+'</p>'+game.inventory.map(x=>'<div class="item"><div class="item-icon">'+x.icon+'</div><div><b>'+escapeHTML(x.name)+'</b><div class="item-meta">'+escapeHTML(x.desc)+'</div></div><div class="item-count">×'+x.count+'</div></div>').join('');
+else if(id==='chat'||id==='forum'||id==='allianceforum'){h='<p class="muted">Локальная доска сообщений. Пока её видишь только ты на этом устройстве.</p><input id="featurePostInput" class="wide-input" maxlength="180" placeholder="Напиши сообщение"><div class="action-row"><button class="primary" onclick="postFeature(\''+id+'\')">Опубликовать</button></div><div class="item-list">'+game.featurePosts.filter(p=>p.section===id).map(p=>'<div class="item"><div class="item-icon">💬</div><div><b>'+escapeHTML(p.author)+'</b><div class="item-meta">'+escapeHTML(p.text)+'</div></div></div>').join('')+'</div>'}
+else if(id==='friends')h='<p>Добавь имя друга в локальный список.</p><div class="action-row"><input id="friendInput" class="wide-input" maxlength="32" placeholder="Имя друга"><button class="primary" onclick="addFriend()">Добавить</button></div>'+game.friends.map(n=>'<div class="item"><div class="item-icon">👤</div><b>'+escapeHTML(n)+'</b></div>').join('');
+else if(id==='alliance')h='<p>Текущий союз: <b>'+escapeHTML(game.alliance||'Нет союза')+'</b></p><div class="action-row"><input id="allianceInput" class="wide-input" maxlength="40" placeholder="Название союза"><button class="primary" onclick="createAlliance()">Создать союз — 1 000 🪙</button></div>';
+else if(id==='help')h='<div class="notice">Принимай пациентов, проводи осмотр, выдавай лекарства и выписывай их. Покупай оборудование и открывай отделения. Все деньги и алмазы здесь игровые.</div>';
+else if(id==='profile')h='<p>Уровень '+game.level+'; опыт '+money(game.xp)+'/100; золото '+money(game.gold)+'; алмазы '+game.diamonds+'.</p>';
+else if(id==='office')h='<p>Кабинет главного врача. Престиж: '+money(game.prestige)+'.</p><button class="primary" onclick="showTab(\'profile\')">Открыть профиль</button>';
+else if(id==='mystery')h='<p>Таинственное поле приносит награду один раз в день.</p><button class="primary" onclick="claimFeature(\'mystery\',350,25)">Исследовать поле</button>';
+else if(id==='epidemic')h='<p>Демо-событие «Эпидемия».</p><button class="primary" onclick="claimFeature(\'epidemic\',600,35)">Завершить событие и получить награду</button>';
+else if(id==='labstar')h='<p>Испытание «Лучший лаборант».</p><button class="primary" onclick="claimFeature(\'labstar\',250,20)">Сдать отчёт лаборанта</button>';
+else if(id==='halloween')h='<p>Сезонное событие Хэллоуин.</p><button class="primary" onclick="claimFeature(\'halloween\',400,25)">Участвовать</button>';
+else if(id==='residents')h='<p>Ординаторская — подготовка команды.</p><button class="primary" onclick="claimFeature(\'residents\',200,15)">Получить бонус команды</button>';
+else h='<p>'+f.desc+'</p><button class="primary" onclick="claimFeature(\''+id+'\',200,15)">Получить дневную награду</button>';
+box.innerHTML=h}
+function buyGoldWithDiamond(){if(game.diamonds<1){alert('Не хватает алмазов.');return}game.diamonds--;game.gold+=10000;addLog('Обменян 1 алмаз на 10 000 золота.');save();renderFeatureDetail('diamondshop')}
+function buyDiamondWithGold(){if(game.gold<50000){alert('Нужно 50 000 золота.');return}game.gold-=50000;game.diamonds++;addLog('Куплен 1 игровой алмаз за 50 000 золота.');save();renderFeatureDetail('diamondshop')}
+function claimDiamondQuest(){if(game.featureClaims.diamondquests===dayKey()){alert('Задание уже выполнено сегодня.');return}game.featureClaims.diamondquests=dayKey();game.diamonds++;game.gold+=250;addXP(20);addLog('Алмазное задание: +1 алмаз, +250 золота.');save();renderFeatureDetail('diamondquests')}
+function postFeature(id){const el=document.getElementById('featurePostInput'),v=el&&el.value.trim();if(!v){alert('Напиши сообщение.');return}game.featurePosts.unshift({section:id,author:'Денчик',text:v,at:new Date().toLocaleTimeString('ru-RU',{hour:'2-digit',minute:'2-digit'})});game.featurePosts=game.featurePosts.slice(0,100);save();renderFeatureDetail(id)}
+function addFriend(){const el=document.getElementById('friendInput'),v=el&&el.value.trim();if(!v){alert('Введи имя друга.');return}if(!game.friends.some(n=>n.toLowerCase()===v.toLowerCase()))game.friends.push(v);save();renderFeatureDetail('friends')}
+function createAlliance(){const el=document.getElementById('allianceInput'),v=el&&el.value.trim();if(!v){alert('Введи название союза.');return}if(game.alliance){alert('Ты уже состоишь в союзе.');return}if(game.gold<1000){alert('Нужно 1 000 золота.');return}game.gold-=1000;game.alliance=v;addLog('Создан союз «'+v+'».');save();renderFeatureDetail('alliance')}
+function upgradeOperating(){const l=game.featureClaims.operatingLevel||1,c=500*l;if(l>=4){alert('Операционная уже 4/4.');return}if(game.gold<c){alert('Не хватает золота.');return}game.gold-=c;game.featureClaims.operatingLevel=l+1;save();renderFeatureDetail('operating')}
+function buyVehicle(){const n=game.featureClaims.vehicleCount||1,c=1500*n;if(game.gold<c){alert('Не хватает золота.');return}game.gold-=c;game.featureClaims.vehicleCount=n+1;save();renderFeatureDetail('vehicles')}
+function upgradeCafe(){const l=game.featureClaims.cafeLevel||1,c=400*l;if(l>=7){alert('Кафетерий уже 7 уровня.');return}if(game.gold<c){alert('Не хватает золота.');return}game.gold-=c;game.featureClaims.cafeLevel=l+1;save();renderFeatureDetail('cafeteria')}
+
 function escapeHTML(s){return String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
 render();
 </script>
