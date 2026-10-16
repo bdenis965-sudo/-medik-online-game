@@ -1,0 +1,152 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#f8e6bf">
+<title>Медик Онлайн — больничная жизнь</title>
+<style>
+:root{--paper:#ffedc9;--paper2:#f5dfb5;--ink:#664321;--link:#6b2ca3;--gold:#e8b84e;--green:#3b8b58;--red:#b84a42;--blue:#4279a7}
+*{box-sizing:border-box}body{margin:0;background:#f8e6bf;color:var(--ink);font-family:Verdana,Arial,sans-serif;font-size:14px}
+header{background:#3b3027;color:#fff0ce;padding:13px 15px;position:sticky;top:0;z-index:4;box-shadow:0 2px 8px #0002}
+.brand{font-weight:900;font-size:19px;letter-spacing:.2px}.brand small{display:block;font-size:11px;font-weight:400;opacity:.8;margin-top:4px}
+.stats{display:flex;gap:7px;flex-wrap:wrap;margin-top:11px}.pill{background:#574638;border:1px solid #78624d;border-radius:20px;padding:6px 9px;font-size:12px}
+nav{display:flex;gap:6px;overflow-x:auto;padding:9px;background:#e8c993;position:sticky;top:93px;z-index:3}
+nav button{flex:0 0 auto;border:1px solid #c7a46a;background:#fff0ce;color:#664321;border-radius:8px;padding:9px 11px;font-weight:700}
+nav button.active{background:#6c3d8e;color:#fff;border-color:#6c3d8e}
+main{max-width:850px;margin:auto;padding:12px}.panel{background:var(--paper);border:1px solid #e7ce9c;border-radius:12px;padding:14px;margin-bottom:12px;box-shadow:0 2px 5px #69451a0a}
+h2{font-size:18px;margin:0 0 12px}h3{font-size:15px;margin:0 0 9px}.muted{color:#8a775f}.profile-head{display:grid;grid-template-columns:100px 1fr;gap:13px;align-items:center}
+.avatar{height:104px;border-radius:12px;background:linear-gradient(145deg,#c9e7e9,#78a5a8);display:grid;place-items:center;font-size:57px;border:2px solid #b8c3b7}
+.level{font-size:12px;margin-top:6px}.progress{height:8px;background:#e2d0aa;border-radius:9px;overflow:hidden;margin:6px 0}.progress span{display:block;height:100%;background:#5c9a60;width:35%}
+.action-row{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}button,.btn{cursor:pointer;font:inherit}.primary,.secondary,.danger{border:0;border-radius:8px;padding:10px 12px;font-weight:700}.primary{background:#6c3d8e;color:white}.secondary{background:#e4c58e;color:#60421f}.danger{background:#b84a42;color:white}.smallbtn{padding:6px 9px;font-size:12px}
+.links{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}.linkcard{background:#fff4dc;border:1px solid #ead5a8;border-radius:9px;padding:11px;text-align:left;color:#6b2ca3;font-weight:700}
+.item-list{display:grid;gap:8px}.item{display:grid;grid-template-columns:40px 1fr auto;gap:9px;align-items:center;background:#fff4dc;border:1px solid #ead5a8;border-radius:9px;padding:9px}.item-icon{font-size:26px;text-align:center}.item-name{color:var(--link);text-decoration:underline;font-weight:700}.item-meta{font-size:11px;color:#8a775f;margin-top:4px}.item-count{font-weight:700;color:#6c4d2d;white-space:nowrap}
+.grid2{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}.card{background:#fff4dc;border:1px solid #ead5a8;border-radius:10px;padding:12px}.card .emoji{font-size:28px}.card p{font-size:12px;line-height:1.45;color:#80694c}.price{font-weight:900;color:#936b19}.tag{display:inline-block;border-radius:12px;background:#e9d8b4;padding:4px 7px;font-size:11px;margin:2px}
+.patient{display:grid;grid-template-columns:42px 1fr;gap:9px;padding:10px;background:#fff4dc;border:1px solid #ead5a8;border-radius:9px;margin-bottom:8px}.patient-icon{font-size:30px}.patient p{margin:5px 0;font-size:12px;line-height:1.4}.log{font-size:12px;line-height:1.6;max-height:180px;overflow:auto}.log div{padding:5px 0;border-bottom:1px dashed #dfc99d}
+.hidden{display:none!important}.notice{background:#e5f1d9;border:1px solid #b7d2a5;padding:10px;border-radius:8px;font-size:12px;margin-bottom:10px}
+footer{text-align:center;padding:10px 14px 24px;font-size:11px;color:#927957}
+@media(min-width:620px){.grid2{grid-template-columns:repeat(3,minmax(0,1fr))}.links{grid-template-columns:repeat(4,minmax(0,1fr))}}
+</style>
+</head>
+<body>
+<header>
+ <div class="brand">🏥 Медик Онлайн <small>Твоя больница — твои правила</small></div>
+ <div class="stats">
+  <span class="pill">🪙 <b id="gold">1200</b></span><span class="pill">⭐ <b id="prestige">150</b> престижа</span>
+  <span class="pill">📈 Уровень <b id="level">3</b></span><span class="pill">🩺 Пациенты <b id="patientsCount">2</b></span>
+ </div>
+</header>
+<nav id="nav">
+ <button class="active" data-tab="profile">👤 Профиль</button><button data-tab="hospital">🏥 Больница</button>
+ <button data-tab="shop">🛒 Магазин</button><button data-tab="staff">👨‍⚕️ Персонал</button><button data-tab="tasks">📋 Задания</button>
+</nav>
+<main>
+<section id="profile" class="tab">
+ <div class="panel">
+  <h2>👤 Профиль игрока</h2>
+  <div class="profile-head"><div class="avatar">🧑‍⚕️</div><div><h2 style="margin-bottom:4px">Денчик</h2><div class="muted">Главный врач · Онлайн</div><div class="level">Уровень <b id="level2">3</b> · Опыт <b id="xp">45</b>/100</div><div class="progress"><span id="xpbar" style="width:45%"></span></div><span class="tag">🏅 Начинающий врач</span><span class="tag">🏥 Своя клиника</span></div></div>
+  <div class="action-row"><button class="primary" onclick="showTab('hospital')">Лечить пациентов</button><button class="secondary" onclick="showTab('shop')">Улучшить больницу</button><button class="secondary" onclick="messagePlayer()">✉️ Написать сообщение</button></div>
+ </div>
+ <div class="panel"><h2>🎒 Снаряжение <span class="muted" id="itemTotal">(175)</span></h2><div class="item-list" id="inventory"></div></div>
+ <div class="panel"><h2>📊 Статистика</h2><div class="grid2"><div class="card">💚 Вылечено пациентов <h2 id="cured">12</h2></div><div class="card">🪙 Заработано <h2 id="earned">2 450</h2></div><div class="card">🏆 Престиж <h2 id="prestige2">150</h2></div></div></div>
+ <div class="panel"><h2>📜 Последние события</h2><div class="log" id="log"></div></div>
+</section>
+<section id="hospital" class="tab hidden">
+ <div class="panel"><h2>🏥 Приёмное отделение</h2><div class="notice">Осматривай пациентов, ставь предварительный диагноз и проводи лечение. За успешное лечение получаешь деньги, опыт и престиж.</div><div class="action-row"><button class="primary" onclick="admitPatient()">➕ Принять пациента</button><button class="secondary" onclick="treatAll()">⚡ Осмотреть всех</button><button class="secondary" onclick="giveMedicineAll()">💊 Выдать лекарства всем</button></div><div id="patients" style="margin-top:12px"></div></div>
+ <div class="panel"><h2>🛏️ Возможности клиники</h2><div id="hospitalStats"></div></div>
+</section>
+<section id="shop" class="tab hidden">
+ <div class="panel"><h2>🛒 Магазин оборудования</h2><p class="muted">Покупай оборудование, чтобы ускорить работу и открывать новые действия.</p><div class="grid2" id="shopItems"></div></div>
+</section>
+<section id="staff" class="tab hidden">
+ <div class="panel"><h2>👨‍⚕️ Персонал</h2><p class="muted">Нанимай сотрудников: они помогают лечить пациентов и приносят бонусы.</p><div class="grid2" id="staffItems"></div></div>
+</section>
+<section id="tasks" class="tab hidden">
+ <div class="panel"><h2>📋 Ежедневные задания</h2><div id="taskList"></div><div class="action-row"><button class="primary" onclick="claimTasks()">🎁 Забрать награды</button><button class="secondary" onclick="dailyBonus()">🎁 Ежедневный бонус</button></div></div>
+ <div class="panel"><h2>💾 Сохранение</h2><p class="muted">Прогресс автоматически сохраняется на этом устройстве.</p><button class="secondary" onclick="exportSave()">Экспорт сохранения</button> <button class="danger" onclick="resetGame()">Сбросить игру</button></div>
+</section>
+</main>
+<footer>Медик Онлайн — оригинальная браузерная игра-фанатский прототип. Прогресс хранится на устройстве.</footer>
+<script>
+const initial={
+ gold:1200,prestige:150,level:3,xp:45,cured:12,earned:2450,
+ inventory:[
+ {id:'blender',icon:'🥣',name:'Блендер',count:12,desc:'Помогает готовить смеси для процедур.'},
+ {id:'stove',icon:'🍔',name:'Кухонная плита',count:12,desc:'Оборудование для кухни больницы.'},
+ {id:'palm',icon:'🌴',name:'Пальма',count:12,desc:'Украшение для зоны отдыха.'},
+ {id:'xray',icon:'🧠',name:'Рентген-сканер',count:12,desc:'Помогает быстрее определить диагноз.'},
+ {id:'pc',icon:'📱',name:'Карманный компьютер',count:12,desc:'Упрощает ведение карточек пациентов.'},
+ {id:'gps',icon:'🗺️',name:'GPS',count:12,desc:'Помогает спасателям находить пациентов.'},
+ {id:'mixer',icon:'✋',name:'Миксер',count:12,desc:'Инструмент для процедур.'},
+ {id:'conveyor',icon:'🛩️',name:'Конвейер',count:12,desc:'Ускоряет работу отделения.'},
+ {id:'charger',icon:'🔋',name:'Зарядник',count:7,desc:'Поддерживает технику в рабочем состоянии.'},
+ {id:'laundry',icon:'📷',name:'Прачечная',count:12,desc:'Поддерживает чистоту.'},
+ {id:'speaker',icon:'📢',name:'Динамик',count:6,desc:'Объявления по больнице.'},
+ {id:'bag',icon:'🧰',name:'Медицинская сумка',count:12,desc:'Необходимые инструменты врача.'},
+ {id:'carwash',icon:'🚑',name:'Автомойка',count:10,desc:'Обслуживание транспорта.'},
+ {id:'tv',icon:'🖥️',name:'Телевизор',count:12,desc:'Комфорт пациентов.'},
+ {id:'vet',icon:'🐾',name:'Ветеринарный центр',count:2,desc:'Дополнительное отделение.'},
+ {id:'lab',icon:'🧪',name:'Ветеринарная лаборатория',count:1,desc:'Анализы для отдельного отделения.'},
+ {id:'kitchen',icon:'🍳',name:'Кухонный комбайн',count:5,desc:'Помогает кухне.'},
+ {id:'fan',icon:'🔥',name:'Вентилятор',count:7,desc:'Комфортная температура.'},
+ {id:'showcase',icon:'🛒',name:'Торговая витрина',count:5,desc:'Дополнительный доход.'}
+ ],
+ patients:[
+ {id:1,name:'Алексей',icon:'🧑',condition:'Высокая температура',severity:2,diagnosed:false,meds:false},
+ {id:2,name:'Мария',icon:'👩',condition:'Кашель и слабость',severity:1,diagnosed:false,meds:false}
+ ],
+ staff:[
+ {id:'doctor',name:'Врач-терапевт',icon:'🩺',cost:500,owned:1,desc:'+10% к успешному лечению'},
+ {id:'nurse',name:'Медсестра',icon:'👩‍⚕️',cost:350,owned:1,desc:'Помогает проводить процедуры'},
+ {id:'paramedic',name:'Фельдшер',icon:'🚑',cost:700,owned:0,desc:'Ускоряет приём пациентов'},
+ {id:'resuscitator',name:'Реаниматолог',icon:'❤️‍🩹',cost:1200,owned:0,desc:'Открывает помощь тяжёлым пациентам'},
+ {id:'labtech',name:'Лаборант',icon:'🧪',cost:650,owned:0,desc:'Ускоряет диагностику'}
+ ],
+ equipment:[
+ {id:'stethoscope',name:'Стетоскоп',icon:'🩺',cost:150,level:0,max:5,desc:'Осмотр пациента',bonus:'Диагностика'},
+ {id:'xray2',name:'Рентген-аппарат',icon:'🩻',cost:450,level:0,max:5,desc:'Точная диагностика',bonus:'Больше опыта'},
+ {id:'lab2',name:'Лаборатория',icon:'🧪',cost:600,level:0,max:5,desc:'Анализы за один клик',bonus:'Быстрее лечение'},
+ {id:'monitor',name:'Монитор пациента',icon:'📟',cost:800,level:0,max:5,desc:'Наблюдение за тяжёлыми пациентами',bonus:'Реанимация'},
+ {id:'robot',name:'Медицинский робот',icon:'🤖',cost:1400,level:0,max:5,desc:'Автоматизирует рутинные действия',bonus:'Автоматический осмотр'},
+ {id:'infusion',name:'Инфузомат',icon:'💉',cost:950,level:0,max:5,desc:'Упрощает процедуры',bonus:'Лечение быстрее'}
+ ],
+ tasksClaimed:false,bonusClaimed:false,log:['Добро пожаловать в Медик Онлайн!','Ты получил стартовый капитал: 1200 монет.']
+};
+let game;
+try{game=JSON.parse(localStorage.getItem('medikOnlineSave'))||structuredClone(initial)}catch(e){game=JSON.parse(JSON.stringify(initial))}
+function save(){localStorage.setItem('medikOnlineSave',JSON.stringify(game));render()}
+function money(n){return Math.round(n).toLocaleString('ru-RU')}
+function addLog(t){game.log.unshift(new Date().toLocaleTimeString('ru-RU',{hour:'2-digit',minute:'2-digit'})+' — '+t);game.log=game.log.slice(0,35)}
+function showTab(id){document.querySelectorAll('.tab').forEach(s=>s.classList.toggle('hidden',s.id!==id));document.querySelectorAll('nav button').forEach(b=>b.classList.toggle('active',b.dataset.tab===id));window.scrollTo({top:0,behavior:'smooth'})}
+document.querySelectorAll('nav button').forEach(b=>b.onclick=()=>showTab(b.dataset.tab));
+function addXP(n){game.xp+=n;while(game.xp>=100){game.xp-=100;game.level++;game.gold+=250;game.prestige+=20;addLog('Новый уровень '+game.level+'! Бонус: 250 монет и 20 престижа.')} }
+function getEquip(id){return game.equipment.find(x=>x.id===id)}
+function getInv(id){return game.inventory.find(x=>x.id===id)}
+function admitPatient(){if(game.patients.length>=8){alert('Все койки заняты! Вылечи кого-нибудь или улучши больницу.');return}let names=['Иван','Алина','Дмитрий','София','Максим','Ева','Никита','Полина','Артём','Виктория'];let conditions=['Температура и слабость','Боль в горле','Кашель','Ушиб руки','Боль в животе','Головокружение'];let p={id:Date.now(),name:names[Math.floor(Math.random()*names.length)],icon:['🧑','👩','👨','👧'][Math.floor(Math.random()*4)],condition:conditions[Math.floor(Math.random()*conditions.length)],severity:1+Math.floor(Math.random()*3),diagnosed:false,meds:false};game.patients.push(p);addLog('Принят новый пациент: '+p.name+'.');save()}
+function diagnose(id){let p=game.patients.find(x=>x.id===id);if(!p)return;p.diagnosed=true;let x=getEquip('xray2');let bonus=x.level?x.level*2:0;game.xp+=5+bonus;addLog('Проведена диагностика: '+p.name+'. Предварительный диагноз: '+p.condition+'.');save()}
+function giveMedicine(id){let p=game.patients.find(x=>x.id===id);if(!p)return;if(!p.diagnosed){alert('Сначала осмотри пациента и поставь диагноз.');return}p.meds=true;addLog('Лекарства выданы пациенту '+p.name+'.');save()}
+function cure(id){let p=game.patients.find(x=>x.id===id);if(!p)return;if(!p.diagnosed||!p.meds){alert('Сначала проведи осмотр и выдай лекарства.');return}let reward=100+p.severity*35+(game.staff.find(s=>s.id==='doctor').owned*10);game.gold+=reward;game.earned+=reward;game.cured++;game.prestige+=8;addXP(20);game.patients=game.patients.filter(x=>x.id!==id);addLog('Пациент '+p.name+' выписан. Награда: '+reward+' монет, +8 престижа.');save()}
+function treatAll(){game.patients.forEach(p=>{p.diagnosed=true});addLog('Быстрый осмотр проведён всем пациентам.');save()}
+function giveMedicineAll(){let untreated=game.patients.filter(p=>!p.diagnosed);if(untreated.length){alert('Сначала нажми «Осмотреть всех».');return}game.patients.forEach(p=>p.meds=true);addLog('Лекарства выданы всем пациентам.');save()}
+function buyEquip(id){let e=getEquip(id);let cost=e.cost*(e.level+1);if(e.level>=e.max){alert('Максимальный уровень уже достигнут.');return}if(game.gold<cost){alert('Не хватает монет!');return}game.gold-=cost;e.level++;game.prestige+=5;addLog(e.name+' улучшен до уровня '+e.level+'.');save()}
+function buyStaff(id){let s=game.staff.find(x=>x.id===id);if(game.gold<s.cost){alert('Не хватает монет!');return}game.gold-=s.cost;s.owned++;s.cost=Math.round(s.cost*1.45);addLog('Нанят сотрудник: '+s.name+'.');save()}
+function claimTasks(){if(game.tasksClaimed){alert('Награда за задания уже получена.');return}if(game.cured<3){alert('Для награды нужно вылечить ещё '+(3-game.cured)+' пациента(ов).');return}game.tasksClaimed=true;game.gold+=500;game.prestige+=25;addXP(25);addLog('Выполнены ежедневные задания: +500 монет, +25 престижа.');save()}
+function dailyBonus(){if(game.bonusClaimed){alert('Ежедневный бонус уже получен на этом устройстве.');return}game.bonusClaimed=true;game.gold+=250;addXP(10);addLog('Получен ежедневный бонус: 250 монет и 10 опыта.');save()}
+function messagePlayer(){alert('Почта появится в следующем обновлении. Сейчас можно развивать больницу и лечить пациентов!')}
+function resetGame(){if(confirm('Точно сбросить весь прогресс на этом устройстве?')){localStorage.removeItem('medikOnlineSave');game=JSON.parse(JSON.stringify(initial));save()}}
+function exportSave(){let blob=new Blob([JSON.stringify(game,null,2)],{type:'application/json'});let a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='medik-online-save.json';a.click();URL.revokeObjectURL(a.href)}
+function render(){
+ document.getElementById('gold').textContent=money(game.gold);document.getElementById('prestige').textContent=money(game.prestige);document.getElementById('prestige2').textContent=money(game.prestige);document.getElementById('level').textContent=game.level;document.getElementById('level2').textContent=game.level;document.getElementById('xp').textContent=game.xp;document.getElementById('xpbar').style.width=game.xp+'%';document.getElementById('patientsCount').textContent=game.patients.length;document.getElementById('cured').textContent=game.cured;document.getElementById('earned').textContent=money(game.earned);document.getElementById('itemTotal').textContent='('+game.inventory.reduce((a,x)=>a+x.count,0)+')';
+ document.getElementById('inventory').innerHTML=game.inventory.map(x=>`<div class="item"><div class="item-icon">${x.icon}</div><div><div class="item-name" onclick="alert('${x.desc}')">${x.name}</div><div class="item-meta">${x.desc}</div></div><div class="item-count">×${x.count}</div></div>`).join('');
+ document.getElementById('log').innerHTML=game.log.map(x=>'<div>'+escapeHTML(x)+'</div>').join('');
+ document.getElementById('patients').innerHTML=game.patients.length?game.patients.map(p=>`<div class="patient"><div class="patient-icon">${p.icon}</div><div><b>${p.name}</b> <span class="tag">Сложность ${p.severity}/3</span><p>Жалобы: ${p.condition}</p><p>Осмотр: ${p.diagnosed?'✅ проведён':'⏳ не проведён'} · Лекарства: ${p.meds?'✅ выданы':'⏳ не выданы'}</p><div class="action-row">${!p.diagnosed?`<button class="secondary smallbtn" onclick="diagnose(${p.id})">🩺 Осмотреть</button>`:''}${p.diagnosed&&!p.meds?`<button class="secondary smallbtn" onclick="giveMedicine(${p.id})">💊 Выдать лекарства</button>`:''}${p.diagnosed&&p.meds?`<button class="primary smallbtn" onclick="cure(${p.id})">💚 Выписать</button>`:''}</div></div></div>`).join(''):'<div class="notice">Пока пациентов нет. Нажми «Принять пациента», чтобы начать работу.</div>';
+ document.getElementById('hospitalStats').innerHTML=`<span class="tag">🛏️ Койки: 8</span><span class="tag">🧪 Лаборатория: ${getEquip('lab2').level?'уровень '+getEquip('lab2').level:'не куплена'}</span><span class="tag">🩻 Рентген: ${getEquip('xray2').level?'уровень '+getEquip('xray2').level:'не куплен'}</span><span class="tag">🤖 Робот: ${getEquip('robot').level?'уровень '+getEquip('robot').level:'не куплен'}</span>`;
+ document.getElementById('shopItems').innerHTML=game.equipment.map(e=>{let cost=e.cost*(e.level+1);return `<div class="card"><div class="emoji">${e.icon}</div><h3>${e.name}</h3><p>${e.desc}<br><b>Бонус:</b> ${e.bonus}</p><span class="tag">Уровень ${e.level}/${e.max}</span><p class="price">${e.level>=e.max?'МАКСИМУМ':money(cost)+' 🪙'}</p><button class="${e.level>=e.max?'secondary':'primary'} smallbtn" ${e.level>=e.max?'disabled':''} onclick="buyEquip('${e.id}')">${e.level?'Улучшить':'Купить'}</button></div>`}).join('');
+ document.getElementById('staffItems').innerHTML=game.staff.map(s=>`<div class="card"><div class="emoji">${s.icon}</div><h3>${s.name}</h3><p>${s.desc}</p><span class="tag">В штате: ${s.owned}</span><p class="price">${money(s.cost)} 🪙</p><button class="primary smallbtn" onclick="buyStaff('${s.id}')">Нанять</button></div>`).join('');
+ document.getElementById('taskList').innerHTML=`<div class="item"><div class="item-icon">💚</div><div><b>Вылечить 3 пациентов</b><div class="item-meta">Прогресс: ${Math.min(game.cured,3)}/3 · Награда: 500 монет и 25 престижа</div></div><div>${game.tasksClaimed?'✅':'📋'}</div></div><div class="item"><div class="item-icon">🩺</div><div><b>Провести осмотр</b><div class="item-meta">Осмотри пациентов в приёмном отделении</div></div><div>∞</div></div>`;
+}
+function escapeHTML(s){return String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
+render();
+</script>
+</body>
+</html>
